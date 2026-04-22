@@ -1,0 +1,5 @@
+exe ¸¸µé±â
+pyinstaller.exe .\main.py --name="WAFFLELAUNCHER" --icon="waffleLauncher.ico" --hidden-import tensorflow --hidden-import cv2 --add-data ".\opencv_videoio_ffmpeg412_64.dll;.\"
+
+ui -> py
+python -m PyQt5.uic.pyuic -x .\main.ui -o .\mainUI.py

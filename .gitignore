@@ -1,0 +1,24 @@
+# 빌드 결과물
+dist/
+build/
+*.spec
+
+# 대용량 데이터
+savedImage/
+coco/
+darknet-master/
+copy/
+src/
+windows_v1.8.0/
+
+# 구버전 모델
+keras_model.h5
+keras_model.onnx
+labels.txt
+
+# 런타임 생성 파일
+__pycache__/
+*.pkl
+savedBlocks.xml
+*.pyc
+

@@ -1,0 +1,16 @@
+#1 Putty 접속
+ - 주소: 192.168.3.1
+ - ID: root
+ - PW: onioneer
+
+#2 Wi-Fi 연결
+ - uci set wireless.sta.disabled='0'; uci commit wireless; wifi
+ - wifisetup
+   - 1번을 선택하여 공유기 이름 및 패스워드를 입력하여 wifi 접속
+   - 노트북에서 인터넷 사용이 가능해졌는지 확인하여 보드가 와이파이에 접속되었는지 확인 후 다음 진행
+
+#3 서버프로그램 업데이트 (순서대로 명령어 입력)
+ - rm ~/wafflecarServer.py 
+ - wget https://raw.githubusercontent.com/picshbj/wafflecar/master/wafflecarServer.py
+ - mv wafflecarServer.py ~/
+ - uci set wireless.sta.disabled='1'; uci commit wireless; wifi

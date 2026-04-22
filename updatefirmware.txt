@@ -1,0 +1,12 @@
+scp -o HostKeyAlgorithms=+ssh-rsa wafflecarServer/wafflecarServer.py root@192.168.3.1:/root/
+
+
+
+
+
+
+ssh -o HostKeyAlgorithms=+ssh-rsa root@192.168.3.1
+
+
+
+scp -o HostKeyAlgorithms=+ssh-rsa wafflecarServer/wafflecarServer.py root@192.168.3.1:/root/

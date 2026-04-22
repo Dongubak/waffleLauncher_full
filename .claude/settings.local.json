@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python:*)",
+      "Bash(pip install:*)",
+      "Bash(wmic cpu get:*)",
+      "Bash(powershell -Command \"Get-WmiObject Win32_Processor | Select-Object Name, Description | Format-List\")",
+      "Bash(du:*)",
+      "Bash(pip show:*)",
+      "Bash(git rm:*)",
+      "Bash(git add:*)"
+    ]
+  }
+}

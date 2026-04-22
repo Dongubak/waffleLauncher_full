@@ -1,0 +1,19 @@
+oupgrade
+
+opkg update && 
+opkg install kmod-rtl8812au && 
+opkg install python-light && 
+opkg install pyOnionGpio && 
+opkg install pyOnionI2C && 
+opkg install mjpg-streamer && 
+wget https://raw.githubusercontent.com/picshbj/wafflecar/master/wafflecarServer.py && 
+wget https://raw.githubusercontent.com/picshbj/wafflecar/master/mjpg-streamer && 
+wget https://raw.githubusercontent.com/picshbj/wafflecar/master/runWaffleServer && 
+mv mjpg-streamer /etc/config/mjpg-streamer && 
+mv runWaffleServer /etc/init.d/ && 
+mv wafflecarServer.py ~/
+chmod +x /etc/init.d/runWaffleServer && 
+/etc/init.d/runWaffleServer enable && 
+ls -lh /etc/rc.d | grep runWaffleServer && 
+/etc/init.d/runWaffleServer enabled && echo on && 
+uci set wireless.sta.disabled='1'; uci commit wireless; wifi
