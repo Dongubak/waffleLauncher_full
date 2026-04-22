@@ -132,7 +132,10 @@ class LiDARStreamingThread(QThread):
                 self.streamingDistance.emit(int(LiDAR.decode()))
                 self.mutex.unlock()
             except Exception as e:
+                self.mutex.unlock()
                 print('LIDAR THREAD ERROR: %s' % e)
+                if getattr(e, 'errno', None) == 9:  # EBADF: socket closed
+                    break
                 # self.textBrowser_simulation.append('라이다 데이터가 누락되었습니다.')
                 # self.textBrowser.append('라이다 데이터가 누락되었습니다.')
 
@@ -346,7 +349,11 @@ class waffleLauncher(Ui_MainWindow):
             if a1 > a2:
                 self.userAlgorithm = importlib.import_module('algorithm')
             else:
-                self.userAlgorithm = importlib.import_module('algorithm_AutoCreated')
+                mod = importlib.import_module('algorithm_AutoCreated')
+                if hasattr(mod, 'autoDrive_algorithm'):
+                    self.userAlgorithm = mod
+                else:
+                    self.userAlgorithm = importlib.import_module('algorithm')
         except Exception as e:
             self.textBrowser_simulation.append('algorithm.py 파일에 오류가 있습니다. 자세한 내용은 프롬프트창을 확인해주세요.')
             self.textBrowser.append('algorithm.py 파일에 오류가 있습니다. 자세한 내용은 프롬프트창을 확인해주세요.')
