@@ -22,3 +22,6 @@ __pycache__/
 savedBlocks.xml
 *.pyc
 
+# 개발 도구
+.claude/
+
