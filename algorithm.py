@@ -36,24 +36,33 @@ def autoDrive_algorithm(original_img, canny_img, H1LD, H1RD, H2LD, H2RD, H3LD, H
     # yolo_detections는 confidence 내림차순 정렬된 리스트
     # ──────────────────────────────────────────────────
     if yolo_detections:
+        # 전체 탐지 결과 출력
+        print('[YOLO] 탐지 %d건:' % len(yolo_detections))
+        for i, det in enumerate(yolo_detections):
+            print('  [%d] %s  conf=%.1f%%' % (i + 1, det['class'], det['confidence'] * 100))
+
         top = yolo_detections[0]
         top_class = top['class']
         top_conf  = top['confidence']
 
-        # 터미널 출력
-        print('[YOLO] 탐지: %s (%.1f%%)' % (top_class, top_conf * 100))
-
-        # 화면에 탐지 결과 표시
+        # 화면에 1위 탐지 결과 표시
         label = '%s %.0f%%' % (top_class, top_conf * 100)
         cv2.putText(original_img, label, (20, 50),
                     cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2, cv2.LINE_AA)
 
         # ── 여기에 클래스별 주행 명령을 작성하세요 ──
-        # 현재 클래스: 'circle of blue', 'circle of red'
-        if top_class == 'circle of blue':
-            pass  # 명령 미정 (prevComm 유지)
-        elif top_class == 'circle of red':
-            pass  # 명령 미정 (prevComm 유지)
+        # 현재 클래스: 'STOP_SIGN', 'number_one',
+        #              'green_light', 'red_light', 'yellow_light'
+        if top_class == 'STOP_SIGN':
+            pass  # TODO: 정지 명령 작성
+        elif top_class == 'number_one':
+            pass  # TODO: 속도 제한 명령 작성
+        elif top_class == 'green_light':
+            pass  # TODO: 전진 명령 작성
+        elif top_class == 'red_light':
+            pass  # TODO: 정지 명령 작성
+        elif top_class == 'yellow_light':
+            pass  # TODO: 감속 명령 작성
 
     else:
         print('[YOLO] 탐지 없음')
