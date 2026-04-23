@@ -70,8 +70,178 @@ def autoDrive_algorithm(original_img, canny_img, H1LD, H1RD, H2LD, H2RD, H3LD, H
     # ──────────────────────────────────────────────────
     # LiDAR 장애물 회피 (거리 200mm 미만 → 강제 정지)
     # ──────────────────────────────────────────────────
-    if LiDAR > 0 and LiDAR < 200:
+    
+
+    if status == 1:
+        if leftLane and rightLane: # straight
+            if H3RD < H2RD and H1RD != -1: # strange line
+                pass
+            elif H2LD < H2RD:
+                command = 'H,F3,F3,170,E'
+            elif H2LD > H2RD:
+                command = 'H,F3,F3,130,E'
+            else:
+                command = 'H,F3,F3,150,E'
+
+        if leftLane and not rightLane:
+            status = 2
+    if status == 2:
+        if V4D < 70:
+            command = 'H,F1,F1,250,E'
+        elif V4D < 105:
+            command = 'H,F1,F1,220,E'
+        elif V4D < 140:
+            command = 'H,F1,F1,180,E'
+        else:
+            command = 'H,F1,F1,150,E'
+        
+        if leftLane and rightLane and V4D > 130:
+            status = 3
+
+    if status == 3:
+        if leftLane and rightLane: # straight
+            # if H3RD < H2RD and H1RD != -1:
+            if H3RD < H2RD:
+                pass
+            elif H2LD < H2RD:
+                command = 'H,F3,F3,170,E'
+            elif H2LD > H2RD:
+                command = 'H,F3,F3,130,E'
+            else:
+                command = 'H,F3,F3,150,E'
+
+        if leftLane and not rightLane:
+            status = 4
+    if status == 4:
+        if V4D < 70:
+            command = 'H,F1,F1,250,E'
+        elif V4D < 105:
+            command = 'H,F1,F1,230,E'
+        elif V4D < 130:
+            command = 'H,F1,F1,200,E'
+        else:
+            command = 'H,F1,F1,150,E'
+        
+        
+        if leftLane and rightLane and V4D > 130:
+            status = 5
+
+
+    if status == 5:
+        if leftLane and rightLane: # straight
+            if H3RD < H2RD:
+                command = 'H,F3,F3,170,E'
+            elif H1LD > H1RD:
+                command = 'H,F3,F3,130,E'
+            else:
+                command = 'H,F3,F3,150,E'
+
+        if rightLane:
+            status = 6
+    
+    if status == 6:
+        if leftLane and rightLane: # straight
+            # if H3RD < H2RD and H1RD != -1:
+            if V3D == -1 or V6D == -1:
+                pass
+            if V3D < V6D:
+                command = 'H,F3,F3,170,E'
+            elif V3D > V6D:
+                command = 'H,F3,F3,130,E'
+            else:
+                command = 'H,F3,F3,150,E'
+
+        if H3RD != -1:
+            status = 7
+
+
+    
+
+    if status == 7:
+        if leftLane and rightLane: # straight
+            if H3RD < H2RD and H1RD != -1: # strange line
+                pass
+            elif H2LD < H2RD:
+                command = 'H,F3,F3,170,E'
+            elif H2LD > H2RD:
+                command = 'H,F3,F3,130,E'
+            else:
+                command = 'H,F3,F3,150,E'
+
+        if leftLane and not rightLane:
+            status = 8
+
+
+
+    if status == 8:
+        # command = 'H,F0,F0,150,E'
+        if V4D < 70:
+            command = 'H,F1,F1,250,E'
+        elif V4D < 105:
+            command = 'H,F1,F1,220,E'
+        elif V4D < 140:
+            command = 'H,F1,F1,180,E'
+        else:
+            command = 'H,F1,F1,150,E'
+        
+        if leftLane and rightLane and V4D > 130:
+            status = 9
+
+    if status == 9:
+        if leftLane and rightLane: # straight
+            if H3RD < H2RD and H1RD != -1: # strange line
+                pass
+            elif H2LD < H2RD:
+                command = 'H,F3,F3,170,E'
+            elif H2LD > H2RD:
+                command = 'H,F3,F3,130,E'
+            else:
+                command = 'H,F3,F3,150,E'
+
+        if leftLane and not rightLane:
+            status = 10
+
+
+    if status == 10:
+        if leftLane and rightLane: # straight
+            if H2LD < H2RD:
+                command = 'H,F3,F3,170,E'
+            elif H2LD > H2RD:
+                command = 'H,F3,F3,130,E'
+            else:
+                command = 'H,F3,F3,150,E'
+
+        if leftLane and H2RD != -1 and H3RD != -1 and rightLane:
+            status = 11
+        
+    if status == 11:
+        if leftLane and rightLane: # straight
+            if H3RD < H2RD and H1RD != -1:
+                pass
+            elif H2LD < H2RD:
+                command = 'H,F3,F3,170,E'
+            elif H2LD > H2RD:
+                command = 'H,F3,F3,130,E'
+            else:
+                command = 'H,F3,F3,150,E'
+
+        if leftLane and not rightLane:
+            status = 12
+
+    if status == 12:
+        if V4D < 70:
+            command = 'H,F1,F1,250,E'
+        elif V4D < 105:
+            command = 'H,F1,F1,230,E'
+        elif V4D < 130:
+            command = 'H,F1,F1,200,E'
+        else:
+            command = 'H,F1,F1,150,E'
+        if leftLane and rightLane and V4D > 130:
+            status = 1
+    
+    if LiDAR <= 200 and LiDAR >= 150:
         command = 'H,F0,F0,150,E'
 
-    print('[상태] LiDAR=%d H2LD=%s H2RD=%s' % (LiDAR, H2LD, H2RD))
+
     return command, status
