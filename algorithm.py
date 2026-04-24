@@ -69,9 +69,7 @@ def autoDrive_algorithm(original_img, canny_img, H1LD, H1RD, H2LD, H2RD, H3LD, H
 
     # ──────────────────────────────────────────────────
     # LiDAR 장애물 회피 (거리 200mm 미만 → 강제 정지)
-    # ──────────────────────────────────────────────────
-    if LiDAR > 0 and LiDAR < 200:
-        command = 'H,F0,F0,150,E'
+    # ─────────────────────────────────────────────────
 
     print('[상태] LiDAR=%d H2LD=%s H2RD=%s' % (LiDAR, H2LD, H2RD))
     return command, status

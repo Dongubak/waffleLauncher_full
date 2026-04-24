@@ -1,23 +1,12 @@
-# waffleLauncher 의존 패키지
-# 검증된 환경: Python 3.11.9 / Windows 11
-# 작성일: 2026-04-22
-#
-# [경고] 버전 의존성이 강함. 아래 버전을 그대로 설치할 것.
-# 특히 PyQt5 ↔ PyQtWebEngine 버전 불일치 시 런처 실행 불가.
-# torch는 ultralytics가 자동 설치하므로 별도 지정 불필요 (자동).
-#
-# 설치 명령:
-#   pip install -r requirements.txt
 
-# Qt GUI
 PyQt5==5.15.11
 PyQtWebEngine==5.15.7
 
-# 영상 처리
+
 opencv-python==4.12.0.88
 
-# 수치 연산 (numpy 2.x는 opencv와 충돌 가능 — 이 버전으로 고정)
+
 numpy==2.2.6
 
-# YOLOv11 (ultralytics가 torch를 자동 설치)
+
 ultralytics==8.4.40
