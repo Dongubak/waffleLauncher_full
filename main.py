@@ -343,7 +343,7 @@ class waffleLauncher(Ui_MainWindow):
         try:
             a1 = os.path.getmtime('algorithm.py')
             a2 = os.path.getmtime('algorithm_AutoCreated.py')
-            if a1 > a2:
+            if a1 >= a2:  # 타임스탬프 같을 때(git clone 직후 등)도 algorithm.py 우선 사용
                 self.userAlgorithm = importlib.import_module('algorithm')
             else:
                 self.userAlgorithm = importlib.import_module('algorithm_AutoCreated')
