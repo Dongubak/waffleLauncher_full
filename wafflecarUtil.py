@@ -240,3 +240,56 @@ def getCenterPoint(leftLane, rightLane):
     right_x = (30-right_b)/right_a
 
     return left_x, right_x
+
+
+# ── YOLO 거리 추정 유틸리티 ──────────────────────────────────────────────────
+# 카메라 초점 거리 (mtx 행렬의 fy)
+_YOLO_FOCAL_LENGTH_PX = 167.7907
+
+# 클래스별 실제 높이 (mm) — 표지판/신호등 실물 크기에 맞게 수정하세요
+_YOLO_KNOWN_HEIGHTS_MM = {
+    'STOP_SIGN':    300,
+    'green_light':  200,
+    'red_light':    200,
+    'yellow_light': 200,
+    'number_one':   200,
+}
+_YOLO_DEFAULT_HEIGHT_MM = 250
+
+
+def enrichYoloDetections(detections):
+    """
+    yolo_detections 리스트의 각 항목에 distance_mm 키를 추가한다.
+    main.py 내부에서 호출되므로 algorithm.py에서는 신경 쓸 필요 없다.
+    """
+    for det in detections:
+        bbox = det.get('bbox')
+        if bbox:
+            bbox_h = bbox[3] - bbox[1]
+            if bbox_h > 0:
+                real_h = _YOLO_KNOWN_HEIGHTS_MM.get(det['class'], _YOLO_DEFAULT_HEIGHT_MM)
+                det['distance_mm'] = (real_h * _YOLO_FOCAL_LENGTH_PX) / bbox_h
+            else:
+                det['distance_mm'] = None
+        else:
+            det['distance_mm'] = None
+    return detections
+
+
+def drawYoloDetections(img, detections):
+    """
+    탐지된 모든 객체의 바운딩 박스, 클래스명, 거리를 이미지에 그린다.
+    algorithm.py에서 한 줄로 호출하면 된다.
+    """
+    for det in detections:
+        bbox = det.get('bbox')
+        if not bbox:
+            continue
+        x1, y1, x2, y2 = [int(v) for v in bbox]
+        dist = det.get('distance_mm')
+        dist_str = ('%.0fmm' % dist) if dist is not None else '?'
+        label = '%s  %s' % (det['class'], dist_str)
+        cv2.rectangle(img, (x1, y1), (x2, y2), (0, 255, 0), 2)
+        cv2.putText(img, label, (x1, max(y1 - 8, 0)),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.55, (0, 255, 0), 1, cv2.LINE_AA)
+    return img

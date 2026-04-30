@@ -690,8 +690,10 @@ class waffleLauncher(Ui_MainWindow):
                         for box in sorted(yolo_results[0].boxes, key=lambda b: float(b.conf), reverse=True):
                             yolo_detections.append({
                                 'class': yolo_results[0].names[int(box.cls)],
-                                'confidence': float(box.conf)
+                                'confidence': float(box.conf),
+                                'bbox': box.xyxy[0].tolist(),
                             })
+                        enrichYoloDetections(yolo_detections)
                 except Exception as e:
                     print('[YOLO inference] %s' % e)
 
