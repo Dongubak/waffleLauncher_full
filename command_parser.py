@@ -180,6 +180,7 @@ class TestParseHCommand(unittest.TestCase):
 
     def test_empty_string(self):
         self.assertIsNone(parse_h_command(''))
+        
 
 
 class TestGetAlignedWheelAngleFlexible(unittest.TestCase):
