@@ -62,4 +62,6 @@ def autoDrive_algorithm(original_img, canny_img, H1LD, H1RD, H2LD, H2RD, H3LD, H
     if status == 4:
         command = 'H,F0,F0,150,E'
 
+        
+
     return command, status
