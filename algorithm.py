@@ -62,6 +62,14 @@ def autoDrive_algorithm(original_img, canny_img, H1LD, H1RD, H2LD, H2RD, H3LD, H
     if status == 4:
         command = 'H,F0,F0,150,E'
 
-        
+    
+
+    # command = 'H,F3,F3,150,E'
+    # command ='H, F3, F3, 150, E'
+    # command ='H, F3, F3, 130, E'
+    # command = 'H,F3, F3,150,E'
+    # command = 'H,F3 F3 120 E'
+    # command = 'H,F3,F3,150,E'
+    # command = ' h, f3, f3, 110, e'
 
     return command, status

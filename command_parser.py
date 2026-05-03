@@ -182,5 +182,39 @@ class TestParseHCommand(unittest.TestCase):
         self.assertIsNone(parse_h_command(''))
 
 
+class TestGetAlignedWheelAngleFlexible(unittest.TestCase):
+    """getAlignedWheelAngle이 유연한 입력을 처리하는지 검증 (alignAlgle=5 → offset=0)"""
+
+    def setUp(self):
+        import sys, os
+        sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+        from wafflecarUtil import getAlignedWheelAngle
+        self.fn = getAlignedWheelAngle
+        # alignAlgle=5 → alignAlgle=(5*5)-25=0 → 각도 변화 없음
+
+    def test_standard_format(self):
+        self.assertEqual(self.fn('H,F3,F3,150,E', 5), 'H,F3,F3,150,E')
+
+    def test_spaces_around_commas(self):
+        self.assertEqual(self.fn(' H, F3, F3, 150, E', 5), 'H,F3,F3,150,E')
+
+    def test_mixed_spacing(self):
+        self.assertEqual(self.fn('H,F3, F3,150,E', 5), 'H,F3,F3,150,E')
+
+    def test_lowercase(self):
+        self.assertEqual(self.fn('h,f3,F3,150,E', 5), 'H,F3,F3,150,E')
+
+    def test_space_delimiter(self):
+        self.assertEqual(self.fn('H F3 F3 150 E', 5), 'H,F3,F3,150,E')
+
+    def test_angle_offset_applied(self):
+        # alignAlgle=6 → offset=(6*5)-25=5 → 150+5=155
+        self.assertEqual(self.fn('H,F3,F3,150,E', 6), 'H,F3,F3,155,E')
+
+    def test_angle_offset_with_flexible_input(self):
+        # 유연한 입력에도 각도 보정이 올바르게 적용되는지
+        self.assertEqual(self.fn(' h, f3, f3, 150, e', 6), 'H,F3,F3,155,E')
+
+
 if __name__ == '__main__':
     unittest.main(verbosity=2)

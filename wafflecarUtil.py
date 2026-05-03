@@ -1,6 +1,11 @@
 import cv2
 import numpy as np
+import sys
+import os
 # import pygame
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from command_parser import split_command, normalize_tokens
 
 ############################# Camera Parameter ##############################
 mtx = np.array([[168.1683,   0.,         166.4460],
@@ -179,10 +184,10 @@ def getAlignedWheelAngle(command, alignAlgle):
         steeringAngle = int(command[2:5]) + alignAlgle
         command = command[:2] + '%03d'%steeringAngle + 'E'
 
-    elif command[0] == 'H':  # when the command is H mode (ex: 'command = 'H,F1,F1,155,E')
-        com = command.split(',')
-        com[3] = int(com[3]) + alignAlgle
-        command = 'H,%s,%s,%03d,E' % (com[1], com[2], com[3])
+    elif normalize_tokens(split_command(command))[0] == 'H':  # when the command is H mode (ex: 'H,F1,F1,155,E')
+        com = normalize_tokens(split_command(command))
+        com[3] = str(int(com[3]) + alignAlgle)
+        command = 'H,%s,%s,%03d,E' % (com[1], com[2], int(com[3]))
         
     else:
         print('Wrong command input!!')
