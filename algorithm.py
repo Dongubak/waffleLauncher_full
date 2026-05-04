@@ -28,39 +28,19 @@ def autoDrive_algorithm(original_img, canny_img, H1LD, H1RD, H2LD, H2RD, H3LD, H
     """
     command = prevComm
 
-    if status == 1:
-        if H2LD < H2RD:
-            command = 'H,F3,F3,180,E'
+    if leftLane and rightLane:
         if H2LD > H2RD:
-            command = 'H,F3,F3,120,E'
-        else:
+            comamnd = 'H,F3,F3,110,E'
+        elif H2LD < H2RD:
+            command = 'H,F3,F3,190,E'
+        else: # H2LD == H2RD
             command = 'H,F3,F3,150,E'
 
-        if not leftLane:
-            status = 2
-
-    if status == 2:
-        if 110 < V4D < 130:
-            command = 'H,F1,F1,210,E'
-        elif V4D < 90:
-            command = 'H,F1,F1,250,E'
-        
-        if V4D > 140:
-            status = 3
-
-    if status == 3:
-        if H2LD < H2RD:
-            command = 'H,F3,F3,180,E'
-        if H2LD > H2RD:
-            command = 'H,F3,F3,120,E'
-        else:
-            command = 'H,F3,F3,150,E'
-
-        if not leftLane:
-            status = 4
-
-    if status == 4:
-        command = 'H,F0,F0,150,E'
+    if not rightLane:
+        if 90 < V4D < 120:
+            command = 'H,F3,F3,210,E'
+        elif V4D < 130:
+            command = 'H,F3,F3,250,E'
 
 
     return command, status
