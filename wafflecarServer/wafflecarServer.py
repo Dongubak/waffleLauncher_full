@@ -10,6 +10,9 @@ import sys
 from OmegaExpansion import onionI2C
 import math
 
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from command_parser import split_command, normalize_tokens
+
 # Registers/etc:
 PCA9685_ADDRESS    = 0x40
 MODE1              = 0x00
@@ -216,7 +219,7 @@ def startServer(connection, client_address, sendComm):
             stopTimerVal = 0
                 
             if data[0] == 'H':
-                comm = data.split(',')
+                comm = normalize_tokens(split_command(data))
                 # correct command input
                 if comm[0] == 'H' and comm[4] == 'E':
                     

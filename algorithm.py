@@ -28,48 +28,39 @@ def autoDrive_algorithm(original_img, canny_img, H1LD, H1RD, H2LD, H2RD, H3LD, H
     """
     command = prevComm
 
-    if yolo_detections is None:
-        yolo_detections = []
+    if status == 1:
+        if H2LD < H2RD:
+            command = 'H,F3,F3,180,E'
+        if H2LD > H2RD:
+            command = 'H,F3,F3,120,E'
+        else:
+            command = 'H,F3,F3,150,E'
 
-    # ──────────────────────────────────────────────────
-    # YOLO 탐지 결과 활용
-    # yolo_detections는 confidence 내림차순 정렬된 리스트
-    # ──────────────────────────────────────────────────
-    if yolo_detections:
-        # 전체 탐지 결과 출력
-        print('[YOLO] 탐지 %d건:' % len(yolo_detections))
-        for i, det in enumerate(yolo_detections):
-            print('  [%d] %s  conf=%.1f%%' % (i + 1, det['class'], det['confidence'] * 100))
+        if not leftLane:
+            status = 2
 
-        top = yolo_detections[0]
-        top_class = top['class']
-        top_conf  = top['confidence']
+    if status == 2:
+        if 110 < V4D < 130:
+            command = 'H,F1,F1,210,E'
+        elif V4D < 90:
+            command = 'H,F1,F1,250,E'
+        
+        if V4D > 140:
+            status = 3
 
-        # 화면에 1위 탐지 결과 표시
-        label = '%s %.0f%%' % (top_class, top_conf * 100)
-        cv2.putText(original_img, label, (20, 50),
-                    cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2, cv2.LINE_AA)
+    if status == 3:
+        if H2LD < H2RD:
+            command = 'H,F3,F3,180,E'
+        if H2LD > H2RD:
+            command = 'H,F3,F3,120,E'
+        else:
+            command = 'H,F3,F3,150,E'
 
-        # ── 여기에 클래스별 주행 명령을 작성하세요 ──
-        # 현재 클래스: 'STOP_SIGN', 'number_one',
-        #              'green_light', 'red_light', 'yellow_light'
-        if top_class == 'STOP_SIGN':
-            pass  # TODO: 정지 명령 작성
-        elif top_class == 'number_one':
-            pass  # TODO: 속도 제한 명령 작성
-        elif top_class == 'green_light':
-            pass  # TODO: 전진 명령 작성
-        elif top_class == 'red_light':
-            pass  # TODO: 정지 명령 작성
-        elif top_class == 'yellow_light':
-            pass  # TODO: 감속 명령 작성
+        if not leftLane:
+            status = 4
 
-    else:
-        print('[YOLO] 탐지 없음')
+    if status == 4:
+        command = 'H,F0,F0,150,E'
 
-    # ──────────────────────────────────────────────────
-    # LiDAR 장애물 회피 (거리 200mm 미만 → 강제 정지)
-    # ─────────────────────────────────────────────────
 
-    print('[상태] LiDAR=%d H2LD=%s H2RD=%s' % (LiDAR, H2LD, H2RD))
     return command, status

@@ -1,6 +1,12 @@
+import re
 import cv2
 import numpy as np
+import sys
+import os
 # import pygame
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from command_parser import split_command, normalize_tokens
 
 ############################# Camera Parameter ##############################
 mtx = np.array([[168.1683,   0.,         166.4460],
@@ -172,21 +178,71 @@ def weighted_img(img, initial_img, alpha=1, beta=1., gamma=0.):
     return cv2.addWeighted(initial_img, alpha, img, beta, gamma)
 
 def getAlignedWheelAngle(command, alignAlgle):
-    # apply alignment setting
-    alignAlgle = (alignAlgle*5) - 25
+    # 정렬 각도 오프셋 계산 (기존 로직 유지)
+    alignAlgle = (alignAlgle * 5) - 25
     
-    if command[0] == 'L':    # when the command is L mode (ex: 'L1150E')
-        steeringAngle = int(command[2:5]) + alignAlgle
-        command = command[:2] + '%03d'%steeringAngle + 'E'
+    # ---------------------------------------------------------
+    # 1. L 모드 처리 (기존 유지하되 최소한의 형식 검증 추가)
+    # ---------------------------------------------------------
+    if command.startswith('L'):
+        try:
+            steeringAngle = int(command[2:5]) + alignAlgle
+            # L 모드에서도 범위 검증 컨벤션 적용
+            if not (50 <= steeringAngle <= 250):
+                print(f"[RANGE_ERR] Adjusted L-Angle {steeringAngle} out of range (50~250).")
+                steeringAngle = max(50, min(250, steeringAngle))
+            return command[:2] + '%03d' % steeringAngle + 'E'
+        except ValueError:
+            print(f"[TYPE_ERR] L-mode angle '{command[2:5]}' is not a valid integer.")
+            return 'L0150E'
 
-    elif command[0] == 'H':  # when the command is H mode (ex: 'command = 'H,F1,F1,155,E')
-        com = command.split(',')
-        com[3] = int(com[3]) + alignAlgle
-        command = 'H,%s,%s,%03d,E' % (com[1], com[2], com[3])
+    # ---------------------------------------------------------
+    # 2. H 모드 처리 (4단계 상세 검증 컨벤션 적용)
+    # ---------------------------------------------------------
+    tokens = split_command(command)
+    
+    # [1단계] 구조 검증: 토큰 개수
+    if len(tokens) != 5:
+        print(f"[LEN_ERR] Expected 5 tokens, but got {len(tokens)}.")
+        return 'L0150E' # 에러 시 안전값 반환
+
+    tokens = normalize_tokens(tokens)
+
+    # [2단계] 마커 검증: 시작(H)과 끝(E)
+    if tokens[0] != 'H' or tokens[4] != 'E':
+        print(f"[MARK_ERR] Invalid Start/End marker. ('H', 'E' expected)")
+        return 'L0150E'
+
+    # [3단계] 형식 검증: 모터 및 각도 데이터 타입
+    motor_pattern = re.compile(r'^([FB])(\d)$')
+    
+    # 모터 형식 및 범위 동시 검증
+    for i, label in enumerate(['right_motor', 'left_motor'], start=1):
+        match = motor_pattern.match(tokens[i])
+        if not match:
+            print(f"[TYPE_ERR] Invalid motor format '{tokens[i]}'. (F0~3, B0~3 expected)")
+            return 'L0150E'
         
-    else:
-        print('Wrong command input!!')
-        command = 'L0150E'
+        # [4단계] 범위 검증: 모터 속도 (0~3)
+        speed = int(match.group(2))
+        if not (0 <= speed <= 3):
+            print(f"[RANGE_ERR] Motor speed {speed} out of range (0~3).")
+            return 'L0150E'
+
+    # 각도 형식 및 범위 검증
+    angle_str = tokens[3]
+    if not angle_str.lstrip('-').isdigit():
+        print(f"[TYPE_ERR] Angle '{angle_str}' is not a valid integer.")
+        return 'L0150E'
+    
+    # [4단계] 범위 검증: 각도 (50~250)
+    angle = int(angle_str) + alignAlgle
+    if not (50 <= angle <= 250):
+        print(f"[RANGE_ERR] Angle {angle} out of range (50~250).")
+        angle = max(50, min(250, angle)) # 안전을 위해 범위를 제한함
+
+    # 모든 검증 통과 시 H-mode 커맨드 재조립
+    command = 'H,%s,%s,%03d,E' % (tokens[1], tokens[2], angle)
     return command
 
 def getLane(lines):
