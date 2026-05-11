@@ -42,5 +42,27 @@ def autoDrive_algorithm(original_img, canny_img, H1LD, H1RD, H2LD, H2RD, H3LD, H
         elif V4D < 130:
             command = 'H,F3,F3,250,E'
 
+    # ===== DEMO VISUALIZATION START (시연용 - 실습 전 삭제) =====
+    if original_img is not None:
+        _, w = original_img.shape[:2]
+
+        # 상태 표시 (좌상단)
+        status_labels = {1: 'STATUS 1: LANE FOLLOW', 2: 'STATUS 2: CURVE', 3: 'STATUS 3: LANE FOLLOW', 4: 'STATUS 4: STOP'}
+        status_text = status_labels.get(status, 'STATUS: %d' % status)
+        (tw, th), _ = cv2.getTextSize(status_text, cv2.FONT_HERSHEY_SIMPLEX, 0.65, 2)
+        cv2.rectangle(original_img, (10, 8), (14 + tw, 22 + th), (50, 50, 50), -1)
+        cv2.putText(original_img, status_text, (12, 20 + th - 4),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.65, (255, 255, 255), 2)
+
+        # YOLO 감지 결과 표시 (우상단, 감지된 경우에만)
+        if yolo_detections:
+            top_det = yolo_detections[0]
+            det_text = 'DETECT: %s (%.0f%%)' % (top_det['class'], top_det['confidence'] * 100)
+            (dw, dh), _ = cv2.getTextSize(det_text, cv2.FONT_HERSHEY_SIMPLEX, 0.65, 2)
+            x0 = w - dw - 14
+            cv2.rectangle(original_img, (x0 - 4, 8), (w - 10, 22 + dh), (0, 180, 0), -1)
+            cv2.putText(original_img, det_text, (x0, 20 + dh - 4),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.65, (0, 0, 0), 2)
+    # ===== DEMO VISUALIZATION END =====
 
     return command, status

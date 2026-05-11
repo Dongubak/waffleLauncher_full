@@ -688,10 +688,20 @@ class waffleLauncher(Ui_MainWindow):
                     yolo_results = self.yolo_model(undist_image, verbose=False)
                     if len(yolo_results[0].boxes) > 0:
                         for box in sorted(yolo_results[0].boxes, key=lambda b: float(b.conf), reverse=True):
+                            cls_name = yolo_results[0].names[int(box.cls)]
+                            conf = float(box.conf)
                             yolo_detections.append({
-                                'class': yolo_results[0].names[int(box.cls)],
-                                'confidence': float(box.conf)
+                                'class': cls_name,
+                                'confidence': conf
                             })
+                            # 바운딩박스 + 레이블 시각화
+                            x1, y1, x2, y2 = map(int, box.xyxy[0])
+                            cv2.rectangle(undist_image, (x1, y1), (x2, y2), (0, 255, 0), 2)
+                            label = '%s %.0f%%' % (cls_name, conf * 100)
+                            (tw, th), _ = cv2.getTextSize(label, cv2.FONT_HERSHEY_SIMPLEX, 0.6, 2)
+                            cv2.rectangle(undist_image, (x1, y1 - th - 6), (x1 + tw + 4, y1), (0, 255, 0), -1)
+                            cv2.putText(undist_image, label, (x1 + 2, y1 - 4),
+                                        cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 0), 2)
                 except Exception as e:
                     print('[YOLO inference] %s' % e)
 
