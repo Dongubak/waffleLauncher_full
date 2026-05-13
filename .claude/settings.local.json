@@ -9,7 +9,9 @@
       "Bash(pip show:*)",
       "Bash(git rm:*)",
       "Bash(git add:*)",
-      "Bash(git checkout:*)"
+      "Bash(git checkout:*)",
+      "Bash(xargs ls -la)",
+      "Bash(python3 -c \"from ultralytics import YOLO; m = YOLO\\('/Users/khj/Documents/waffleLauncher_full/yolo_model.pt'\\); print\\(m.names\\)\")"
     ]
   }
 }
