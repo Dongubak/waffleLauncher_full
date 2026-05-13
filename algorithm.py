@@ -56,40 +56,40 @@ def autoDrive_algorithm(original_img, canny_img, H1LD, H1RD, H2LD, H2RD, H3LD, H
         if leftLane and rightLane:
             if H2LD > H2RD: ## pass를 지우고 command 값을 넣어주세요
                 pass
-            elif H2LD < H2RD:
+            elif H2LD < H2RD: ## pass를 지우고 command 값을 넣어주세요
                 pass
-            else: # H2LD == H2RD
+            else: # H2LD == H2RD ## pass를 지우고 command 값을 넣어주세요
                 pass
                 
     elif type == '직진_라이다':
         ## 직진시 라이다 이용해서 멈출때 사용하세요
         if 150 <= LiDAR <= 200: # 150mm 와 200mm 사이 거리인 경우 아래 블럭을 실행합니다.
             # 더 가까운 거리에서 멈춰볼까요?
-            pass
+            pass ## pass를 지우고 command 값을 넣어주세요
         else:
-            pass
+            pass ## pass를 지우고 command 값을 넣어주세요
         
 
     elif type == '표지판_이용':
         ## 직진시 표지판 이용해서 멈출때 사용하세요
         if top_class != 'Nothing' and top_class == 'STOP_SIGN': # 무엇인가 감지된 경우
-            pass
+            pass ## pass를 지우고 command 값을 넣어주세요
         else: # 아무것도 감지 안된 경우
-            pass
+            pass ## pass를 지우고 command 값을 넣어주세요
 
     elif type == '신호등':
         ## 빨간불에 멈출때 사용하세요
         if top_class != 'Nothing' and top_class == 'red_light':
-            pass
+            pass ## pass를 지우고 command 값을 넣어주세요
         else:
-            pass
+            pass ## pass를 지우고 command 값을 넣어주세요
 
     elif type == '저속':
         ## 저속 운용시 사용하세요
         if top_class != 'Nothing' and top_class == 'number_one':
-            pass
+            pass ## pass를 지우고 command 값을 넣어주세요
         else:
-            pass
+            pass ## pass를 지우고 command 값을 넣어주세요
 
 
     return command, status
